@@ -15,9 +15,12 @@ fn takesACsvFileAndOutputsSolvedCsvFile() -> Result<()> {
     ];
 
     main::runApp(args)?;
+
     let solvedFilePath = Path::new("./resources/test_name_solved.csv");
     assert!(solvedFilePath.exists());
-    fs::remove_file(solvedFilePath)?;
 
+
+
+    fs::remove_file(solvedFilePath)?;
     Ok(())
 }
