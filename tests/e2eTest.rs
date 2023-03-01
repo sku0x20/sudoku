@@ -19,7 +19,10 @@ fn takesACsvFileAndOutputsSolvedCsvFile() -> Result<()> {
     let solvedFilePath = Path::new("./resources/test_name_solved.csv");
     assert!(solvedFilePath.exists());
 
+    let expectedSolvedString = fs::read_to_string("./resources/test_puzzle_solved_for_e2e.csv")?;
+    let actualSolvedString = fs::read_to_string(solvedFilePath)?;
 
+    assert_eq!(expectedSolvedString, actualSolvedString);
 
     fs::remove_file(solvedFilePath)?;
     Ok(())
