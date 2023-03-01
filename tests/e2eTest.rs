@@ -11,12 +11,12 @@ mod main;
 fn takesACsvFileAndOutputsSolvedCsvFile() -> Result<()> {
     let args = vec![
         "--solve".to_string(),
-        "./resources/test_name.csv".to_string(),
+        "./resources/test_puzzle.csv".to_string(),
     ];
 
     main::runApp(args)?;
 
-    let solvedFilePath = Path::new("./resources/test_name_solved.csv");
+    let solvedFilePath = Path::new("./resources/test_puzzle_solved.csv");
     assert!(solvedFilePath.exists());
 
     let expectedSolvedString = fs::read_to_string("./resources/test_puzzle_solved_for_e2e.csv")?;
