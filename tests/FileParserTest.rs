@@ -1,7 +1,8 @@
 #![allow(non_snake_case)]
 
-use std::{fs, thread};
+use std::fs;
 use std::io::Result;
+use std::panic::catch_unwind;
 use std::path::Path;
 
 #[path = "../src/FileParser.rs"]
@@ -15,10 +16,9 @@ const TEMP_FILE_PATH: &str = "./resources/temp_file.csv";
 fn parsePanics() {
     createFile();
 
-    let handle = thread::spawn(|| {
+    let result = catch_unwind(|| {
         FileParser::parse(TEMP_FILE_PATH);
     });
-    let result = handle.join();
 
     assert!(result.is_err(), "should be Result::Err type");
 
