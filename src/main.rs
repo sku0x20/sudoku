@@ -46,7 +46,7 @@ fn getFileNameWithoutExtension(inputFilePath: &Path) -> &str {
 fn solveSudokuViaBacktracking(puzzleString: String) -> String {
     let mut values: Vec<u8> = Vec::with_capacity(81);
 
-    // extract to fun parse values
+    // extract
     let mut lines = puzzleString.lines();
     while let Some(line) = lines.next() {
         let mut spit = line.split(',');

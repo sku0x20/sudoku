@@ -1,25 +1,34 @@
 #![allow(non_snake_case)]
 
+use std::{fs, thread};
+use std::io::Result;
+use std::path::Path;
+
 #[path = "../src/FileParser.rs"]
 mod FileParser;
 
-// give a vec of valid u8s
-
 // for now making FileParse as a helper/util class
 
+const TEMP_FILE_PATH: &str = "./resources/temp_file.csv";
+
 #[test]
-fn parsesValidStructuredFile(){
-    setupFile();
+fn parsePanics() {
+    createFile();
 
-    // let fileParser = FileParser::from(path);
-    // fileParser.parse();
-    // let string = fileParser.getSudokuVector();
+    let handle = thread::spawn(|| {
+        FileParser::parse(TEMP_FILE_PATH);
+    });
+    let result = handle.join();
 
-    let string = FileParser::parseFile(path);
+    assert!(result.is_err(), "should be Result::Err type");
 
-    teardownFile();
+    removeFile()
 }
 
-fn setupFile(){
+fn createFile() {
+    fs::write(TEMP_FILE_PATH, "test").expect("unable to write to temp file")
+}
 
+fn removeFile() {
+    fs::remove_file(TEMP_FILE_PATH).expect("temp file should be removed")
 }
