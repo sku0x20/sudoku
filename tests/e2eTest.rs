@@ -7,8 +7,10 @@ use std::path::Path;
 #[path = "../src/main.rs"]
 mod main;
 
+// e2e means use cases
+
 #[test]
-fn takesACsvFileAndOutputsSolvedCsvFile() -> Result<()> {
+fn solvesSudoku() -> Result<()> {
     let args = vec![
         "--solve".to_string(),
         "./resources/test_puzzle.csv".to_string(),
