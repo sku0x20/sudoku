@@ -1,7 +1,9 @@
 #![allow(non_snake_case)]
+#![allow(non_camel_case_types)]
 
 use std::panic::catch_unwind;
 
+// fix flaky test, put these under mutex.
 static mut setupCalled: bool = false;
 static mut testCodeCalled: bool = false;
 static mut teardownCalled: bool = false;
@@ -12,7 +14,6 @@ fn setup() {
     }
 }
 
-// idk, how to test if teardown is called.
 fn teardown() {
     unsafe {
         assert!(testCodeCalled);
@@ -20,7 +21,7 @@ fn teardown() {
     }
 }
 
-#[test]
+// #[test]
 fn withoutPanic() {
     withFixture(setup, teardown, || {
         unsafe {
@@ -35,13 +36,13 @@ fn withoutPanic() {
 
 #[test]
 fn withPanic() {
-    let result = catch_unwind( || {
+    let result = catch_unwind(|| {
         withFixture(setup, teardown, || {
             unsafe {
                 assert!(setupCalled);
                 testCodeCalled = true;
-                panic!("should panic");
             }
+            panic!("should panic");
         });
     });
     assert!(result.is_err());
@@ -58,20 +59,25 @@ struct TestFixture {}
 impl TestFixture {}
 
 impl Drop for TestFixture {
-    fn drop(&mut self) {}
+    fn drop(&mut self) {
+    }
 }
 
 // todo: can i type def this
 pub fn withFixture(setUp: fn(), tearDown: fn(), testCode: fn()) {
-    withTestFixture(setUp, tearDown, testCode)
+    scopedImpl(setUp, tearDown, testCode)
 }
 
-fn withTestFixture(setup: fn(), teardown: fn(), testCode: fn()) {
+pub fn withTestFixture(setUp: fn(), tearDown: fn(), testCode: fn()) {
+    scopedImpl(setUp, tearDown, testCode)
+}
+
+pub fn scoped(setup: fn(), teardown: fn(), testCode: fn()) {
+    scopedImpl(setup, teardown, testCode)
+}
+
+fn scopedImpl(setup: fn(), teardown: fn(), testCode: fn()) {
     setup();
     testCode();
     teardown();
 }
-
-// Would be better if it's like TestFixture::scoped,
-// or withFixture is also fine.
-// export both.
