@@ -13,16 +13,11 @@ mod FileParser;
 const TEMP_FILE_PATH: &str = "./resources/temp_file.csv";
 
 #[test]
+#[should_panic]
 fn parsePanics() {
-    createFile();
+    let testFixture = TestFixture::scoped();
 
-    let result = catch_unwind(|| {
-        FileParser::parse(TEMP_FILE_PATH);
-    });
-
-    assert!(result.is_err(), "should be Result::Err type");
-
-    removeFile()
+    FileParser::parse(TEMP_FILE_PATH);
 }
 
 fn createFile() {
@@ -31,4 +26,30 @@ fn createFile() {
 
 fn removeFile() {
     fs::remove_file(TEMP_FILE_PATH).expect("temp file should be removed")
+}
+
+// support for test fixture
+// https://stackoverflow.com/a/38254435
+struct TestFixture {}
+
+impl TestFixture {
+    fn scoped() -> TestFixture {
+        let testFixture = TestFixture {};
+        testFixture.setUp();
+        return testFixture;
+    }
+
+    fn setUp(&self) {
+        createFile();
+    }
+
+    fn tearDown(&self) {
+        removeFile();
+    }
+}
+
+impl Drop for TestFixture {
+    fn drop(&mut self) {
+        self.tearDown()
+    }
 }
