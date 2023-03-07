@@ -1,5 +1,7 @@
 #![allow(non_snake_case)]
 
+use std::panic::catch_unwind;
+
 // support for test fixture
 // https://stackoverflow.com/a/38254435
 struct TestFixture {}
@@ -10,6 +12,7 @@ impl Drop for TestFixture {
     fn drop(&mut self) {}
 }
 
+// todo: can i type def this
 pub fn withFixture(setUp: fn(), tearDown: fn(), testCode: fn()) {
     withTestFixture(setUp, tearDown, testCode)
 }
@@ -46,6 +49,24 @@ fn withoutPanic() {
             testCodeCalled = true;
         }
     });
+    unsafe {
+        assert!(teardownCalled);
+    }
+}
+
+#[test]
+fn withPanic() {
+    let result = catch_unwind( || {
+        withFixture(setup, teardown, || {
+            unsafe {
+                assert!(setupCalled);
+                testCodeCalled = true;
+                panic!("should panic");
+            }
+        });
+    });
+    assert!(result.is_err());
+
     unsafe {
         assert!(teardownCalled);
     }
