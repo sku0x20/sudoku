@@ -1,12 +1,15 @@
 #![allow(non_snake_case)]
+#![allow(non_upper_case_globals)]
 #![allow(non_camel_case_types)]
 
 use std::panic::catch_unwind;
+use std::sync::Mutex;
 
-// fix flaky test, put these under mutex.
 static mut setupCalled: bool = false;
 static mut testCodeCalled: bool = false;
 static mut teardownCalled: bool = false;
+
+static lock: Mutex<i32> = Mutex::new(0);
 
 fn setup() {
     unsafe {
@@ -21,8 +24,10 @@ fn teardown() {
     }
 }
 
-// #[test]
+#[test]
 fn withoutPanic() {
+    let _guard = lock.lock().unwrap();
+
     withFixture(setup, teardown, || {
         unsafe {
             assert!(setupCalled);
@@ -36,6 +41,8 @@ fn withoutPanic() {
 
 #[test]
 fn withPanic() {
+    let _guard = lock.lock().unwrap();
+
     let result = catch_unwind(|| {
         withFixture(setup, teardown, || {
             unsafe {
@@ -63,7 +70,6 @@ impl Drop for TestFixture {
     }
 }
 
-// todo: can i type def this
 pub fn withFixture(setUp: fn(), tearDown: fn(), testCode: fn()) {
     scopedImpl(setUp, tearDown, testCode)
 }
@@ -81,3 +87,6 @@ fn scopedImpl(setup: fn(), teardown: fn(), testCode: fn()) {
     testCode();
     teardown();
 }
+
+// is drop called for static also.
+// we can try the same thing for class setup and teardown.
