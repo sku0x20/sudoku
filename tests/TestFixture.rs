@@ -12,7 +12,7 @@ struct TestFixture {
 }
 
 impl TestFixture {
-    fn new(setup: fn(), teardown: fn(), block: fn()) -> TestFixture {
+    const fn new(setup: fn(), teardown: fn(), block: fn()) -> TestFixture {
         TestFixture {
             setup,
             teardown,
@@ -109,6 +109,3 @@ fn withPanic() {
         assert_eq!(functionsCalled[2], "teardown");
     }
 }
-
-// is drop called for static also.
-// we can try the same thing for class setup and teardown.
