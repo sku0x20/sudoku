@@ -5,6 +5,7 @@
 use std::panic::catch_unwind;
 use std::sync::Mutex;
 
+// instead of this create a vector and use it under mutex.
 static mut setupCalled: bool = false;
 static mut testCodeCalled: bool = false;
 static mut teardownCalled: bool = false;
@@ -13,6 +14,10 @@ static lock: Mutex<i32> = Mutex::new(0);
 
 fn setup() {
     unsafe {
+        setupCalled = false;
+        testCodeCalled = false;
+        teardownCalled = false;
+
         setupCalled = true;
     }
 }
@@ -20,6 +25,11 @@ fn setup() {
 fn teardown() {
     unsafe {
         assert!(testCodeCalled);
+
+        setupCalled = false;
+        testCodeCalled = false;
+        teardownCalled = false;
+
         teardownCalled = true
     }
 }
@@ -31,6 +41,11 @@ fn withoutPanic() {
     withFixture(setup, teardown, || {
         unsafe {
             assert!(setupCalled);
+
+            setupCalled = false;
+            testCodeCalled = false;
+            teardownCalled = false;
+
             testCodeCalled = true;
         }
     });
@@ -47,6 +62,10 @@ fn withPanic() {
         withFixture(setup, teardown, || {
             unsafe {
                 assert!(setupCalled);
+                setupCalled = false;
+                testCodeCalled = false;
+                teardownCalled = false;
+
                 testCodeCalled = true;
             }
             panic!("should panic");
