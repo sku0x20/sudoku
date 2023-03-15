@@ -5,10 +5,16 @@ pub fn parse(filePath: &str) -> Vec<u8> {
     let contents = fs::read_to_string(filePath).expect("unable to read file");
     let mut lines = contents.lines();
     while let Some(line) = lines.next() {
-        let mut spit = line.split(',');
-        while let Some(value) = spit.next() {
-            puzzle.push(value.trim().parse::<u8>().unwrap());
-        }
+        parseLine(&mut puzzle, line);
     };
     return puzzle;
+}
+
+fn parseLine(puzzle: &mut Vec<u8>, line: &str) {
+    line.split(',')
+        .for_each(|value| puzzle.push(parseValue(value)))
+}
+
+fn parseValue(value: &str) -> u8 {
+    value.trim().parse::<u8>().unwrap()
 }
