@@ -3,10 +3,8 @@ use std::fs;
 pub fn parse(filePath: &str) -> Vec<u8> {
     let mut puzzle: Vec<u8> = Vec::with_capacity(81);
     let contents = fs::read_to_string(filePath).expect("unable to read file");
-    let mut lines = contents.lines();
-    while let Some(line) = lines.next() {
-        parseLine(&mut puzzle, line);
-    };
+    contents.lines()
+        .for_each(|line| parseLine(&mut puzzle, line));
     return puzzle;
 }
 
