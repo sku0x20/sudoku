@@ -20,7 +20,7 @@ const TEMP_FILE_PATH: &str = "./resources/temp_file.csv";
 #[test]
 fn parsesCsvFile() {
     let sampleData = Vec::from(SAMPLE_DATA);
-    let parsedVec = FileParser::parse("./resources/test_puzzle.csv");
+    let parsedVec = FileParser::parseFile("./resources/test_puzzle.csv");
     assert_eq!(parsedVec, sampleData)
 }
 
@@ -31,12 +31,12 @@ fn invalidCharacters() {
     withFixture(setUp, tearDown, || {
         let result = catch_unwind(|| {
             writeToFile("1,2,3,4,0,a");
-            FileParser::parse(TEMP_FILE_PATH);
+            FileParser::parseFile(TEMP_FILE_PATH);
         });
         assert!(result.is_err());
         let result = catch_unwind(|| {
             writeToFile("1,2,3,4,0,-1");
-            FileParser::parse(TEMP_FILE_PATH);
+            FileParser::parseFile(TEMP_FILE_PATH);
         });
         assert!(result.is_err());
     })

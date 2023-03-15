@@ -1,6 +1,6 @@
 use std::fs;
 
-pub fn parse(filePath: &str) -> Vec<u8> {
+pub fn parseFile(filePath: &str) -> Vec<u8> {
     let fileContent = fs::read_to_string(filePath).expect("unable to read file");
 
     let mut parser = InternalParser::new();
