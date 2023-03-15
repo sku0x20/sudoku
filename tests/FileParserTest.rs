@@ -25,8 +25,7 @@ fn parsesCsvFile() {
 }
 
 #[test]
-#[ignore = "todo: "]
-fn invalidCharacters() {
+fn invalidDigit() {
     // only 0-9 are valid; 0 representing empty
     withFixture(setUp, tearDown, || {
         let result = catch_unwind(|| {
