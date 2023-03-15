@@ -33,8 +33,15 @@ fn invalidDigit() {
             FileParser::parseFile(TEMP_FILE_PATH);
         });
         assert!(result.is_err());
+
         let result = catch_unwind(|| {
             writeToFile("1,2,3,4,0,-1");
+            FileParser::parseFile(TEMP_FILE_PATH);
+        });
+        assert!(result.is_err());
+
+        let result = catch_unwind(|| {
+            writeToFile("1,2,3,4,0,10");
             FileParser::parseFile(TEMP_FILE_PATH);
         });
         assert!(result.is_err());

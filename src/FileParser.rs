@@ -30,6 +30,10 @@ impl InternalParser {
     }
 
     fn parseValue(&self, value: &str) -> u8 {
-        value.trim().parse::<u8>().unwrap()
+        let value = value.trim().parse::<u8>().unwrap();
+        if value > 9  {
+            panic!("digit value cannot be more than 10")
+        }
+        value
     }
 }
