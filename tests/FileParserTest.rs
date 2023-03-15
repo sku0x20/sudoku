@@ -48,6 +48,8 @@ fn panicsOnInvalidDigits() {
     })
 }
 
+// todo: malformed input if puzzle.size != 81
+
 fn setUp() {
     writeToFile("");
 }
